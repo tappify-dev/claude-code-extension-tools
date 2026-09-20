@@ -1,0 +1,87 @@
+name: Check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate the plugin
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the plugin
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Parse every manifest
+        run: |
+          node -e 'for (const f of [".claude-plugin/plugin.json",".claude-plugin/marketplace.json",".mcp.json"]) { JSON.parse(require("fs").readFileSync(f,"utf8")); console.log(f, "parses"); }'
+
+      - name: Validate the plugin manifest
+        run: |
+          npm install -g @anthropic-ai/claude-code
+          claude plugin validate .claude-plugin/plugin.json --strict
+
+      - name: Check every skill's frontmatter
+        run: |
+          # shellcheck disable=SC2016 # the ${…} below are JavaScript template literals
+          node -e '
+          const { readFileSync, readdirSync } = require("fs");
+          let bad = 0;
+          for (const name of readdirSync("skills")) {
+            const text = readFileSync(`skills/${name}/SKILL.md`, "utf8");
+            const front = /^---\n([\s\S]*?)\n---\n/.exec(text);
+            if (!front) { console.error(`${name}: no frontmatter`); bad++; continue; }
+            const fields = Object.fromEntries(front[1].split("\n").map(l => { const m = /^(\w+):\s*(.*)$/.exec(l); return m ? [m[1], m[2]] : null; }).filter(Boolean));
+            if (fields.name !== name) { console.error(`${name}: frontmatter name is ${fields.name}`); bad++; }
+            if (!/^Use when /.test(fields.description ?? "")) { console.error(`${name}: description must start with "Use when "`); bad++; }
+          }
+          process.exit(bad === 0 ? 0 : 1);
+          '
+
+      - name: Test the skill checker
+        run: node --test scripts/check-skills.test.mjs
+
+      - name: Check out the CLI
+        uses: actions/checkout@v4
+        with:
+          repository: tappify-dev/cli
+          token: ${{ secrets.REPO_READ_TOKEN }}
+          path: cli
+
+      - name: Check out the SDK
+        uses: actions/checkout@v4
+        with:
+          repository: tappify-dev/extension-sdk
+          token: ${{ secrets.REPO_READ_TOKEN }}
+          path: extension-sdk
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      # The CLI depends on the SDK as link:../extension-sdk and imports runtime
+      # values from its dist, so the SDK builds first.
+      - name: Build the SDK declarations
+        working-directory: extension-sdk
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build
+
+      - name: Build the CLI command tree
+        working-directory: cli
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build
+          pnpm build:cli-reference --tree-only
+
+      - name: Check the skills against both
+        run: node scripts/check-skills.mjs --cli ./cli --sdk ./extension-sdk

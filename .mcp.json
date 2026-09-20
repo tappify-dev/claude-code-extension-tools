@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "tappify": {
+      "command": "tappify",
+      "args": ["mcp"]
+    }
+  }
+}
