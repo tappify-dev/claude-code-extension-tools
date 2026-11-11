@@ -1,15 +1,15 @@
 {
   "$schema": "https://www.schemastore.org/claude-code-marketplace.json",
   "name": "tappify",
-  "description": "Tappify's own plugins for building extensions.",
+  "description": "Developer tooling for the Tappify extension platform.",
   "owner": {
     "name": "Tappify",
     "email": "support@tappify.ai"
   },
   "plugins": [
     {
-      "name": "tappify",
-      "description": "Build, test and publish Tappify extensions.",
+      "name": "extension-tools",
+      "description": "Build, test, debug and publish Tappify extensions with Claude Code.",
       "source": "./",
       "category": "development"
     }

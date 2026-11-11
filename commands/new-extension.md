@@ -5,8 +5,8 @@ argument-hint: [extension name]
 
 # New Tappify extension
 
-Take the user from an empty directory to a published first release. The name
-they want is "$ARGUMENTS"; ask for one if that is empty.
+Take the extension developer from an empty directory to a published first
+release. The name they want is "$ARGUMENTS"; ask for one if that is empty.
 
 Run every step with the `tappify` MCP server where a tool exists, and in the
 terminal where one does not. Stop and report at the first failure — do not work
@@ -17,10 +17,10 @@ around a failing check.
 Run `tappify extension whoami --json` in the terminal. If it answers
 `ok: false`, read `error.fix` and follow it: a missing session is
 `tappify login`, a missing vendor is `tappify vendor create`. Both are the
-user's to run — `vendor create` asks for a company name, a domain and a
-support email.
+extension developer's to run — `vendor create` asks for a company name, a
+domain and a support email.
 
-Report the vendor name and the sandbox project.
+Report the publisher name and the Tappify sandbox project.
 
 ## 2. Scaffold
 
@@ -30,8 +30,8 @@ answers you can:
 1. The directory, defaulting to a kebab-case form of the name
 2. The id — lowercase letters, digits and dashes, 3 to 40 characters,
    starting with a letter, and permanent once the extension is published
-3. One sentence of description, 10 to 200 characters, that an owner reads in
-   the Tap Store
+3. One sentence of description, 10 to 200 characters, that a workspace owner
+   reads in the Tap Store
 4. The Tap Store category — read the list from the `extension_registry` tool
    rather than guessing
 
@@ -43,29 +43,31 @@ tappify extension init <dir> --id <id> --name "<name>" --description "<text>" --
 
 The answer carries `id`, `name`, `directory` and `files`. Every tool call and
 every command after this one runs from that directory: pass it as `cwd` to a
-tool, and have the user `cd` into it before any command they run themselves.
+tool, and have the extension developer `cd` into it before any command they
+run themselves.
 
 ## 3. Make the starter's widget yours
 
 The starter already declares one widget in the `kpi-row` slot on Analytics, a
 settings panel, a hosted-storage collection and one server procedure. Read
-`src/widgets/summary.tsx` and `server/handler.ts` with the user and change them
-to do what they actually want.
+`src/widgets/summary.tsx` and `server/handler.ts` with the extension developer
+and change them to do what they actually want.
 
 `src/tappify.d.ts` is generated and is rewritten by every `add`, so never
 hand-edit it.
 
-When the user wants a second contribution, call `extension_add` with the kind,
-the name, and the options that kind takes — for a widget, the page, slot and
-size the user picks from `extension_registry`. Never invent a slot: a slot
-belongs to exactly one page, and the registry says which.
+When the extension developer wants a second contribution, call
+`extension_add` with the kind, the name, and the options that kind takes — for
+a widget, the page, slot and size the extension developer picks from
+`extension_registry`. Never invent a slot: a slot belongs to exactly one page,
+and the registry says which.
 
 ## 4. Run the server, then the extension
 
 A procedure runs on the vendor's own server, and Tappify relays procedure
 calls from its servers, so the dev session needs an address Tappify can reach.
-Localhost is not one. Three terminals, all the user's, because each keeps
-running:
+Localhost is not one. Three terminals, all the extension developer's, because
+each keeps running:
 
 ```bash
 pnpm run dev:worker
@@ -73,13 +75,15 @@ cloudflared tunnel --url http://localhost:8787
 tappify extension dev --live --server https://<tunnel>.trycloudflare.com
 ```
 
-Any tunnel works, and so does a server the user has already deployed.
+Any tunnel works, and so does a server the extension developer has already
+deployed.
 
 Two lines come back: the local remote entry being served, and the sandbox
 project's Analytics page to open. The widget renders in the KPI row, answered
-by the worker on the user's machine. Editing the component reloads it. Have
-the user change the page's date range: the number changes with it, because
-the widget reads the page filters through `useTapFilters`.
+by the worker on the extension developer's machine. Editing the component
+reloads it. Have the extension developer change the page's date range: the
+number changes with it, because the widget reads the page filters through
+`useTapFilters`.
 
 Without `--live` the session prints a portal preview URL instead, which needs
 no install.
@@ -87,7 +91,7 @@ no install.
 ## 5. Run the checks
 
 Call `extension_doctor`. Read `errors` — fix every one before going further.
-Report `warnings` without acting on them unless the user asks. `fixed` lists
+Report `warnings` without acting on them unless the extension developer asks. `fixed` lists
 what the tool rewrote, and is empty unless it was called with `fix: true`.
 
 ## 6. Deploy the server and point the manifest at it
@@ -105,14 +109,14 @@ tappify extension set server.baseUrl https://<deployed-server> --json
 
 Call `extension_publish` with `confirm: false` and one line of notes. It builds
 the project, runs the local checks and answers with the release summary: the id,
-the bytes, the entries and the scopes an owner will be asked to grant. Nothing
+the bytes, the entries and the scopes a workspace owner will be asked to grant. Nothing
 reaches Tappify on that call — the id is claimed and the store's own checks run
-only when you confirm. Show the summary to the user, and only after they agree
-call it again with `confirm: true`.
+only when you confirm. Show the summary to the extension developer, and only
+after they agree call it again with `confirm: true`.
 
 The starter is private, so the release is live the moment it uploads,
-installable inside the user's own workspace and nowhere else. Nobody reviews a
-private release. Report `status`, `releaseId` and `bytes`.
+installable inside the extension developer's own workspace and nowhere else.
+Nobody reviews a private release. Report `status`, `releaseId` and `bytes`.
 
 Then call `extension_status` and report the live release and the install count.
 

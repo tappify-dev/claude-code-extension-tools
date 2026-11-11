@@ -1,24 +1,38 @@
-# Tappify for Claude Code
+# Tappify Extension Tools for Claude Code
 
-Skills and tools for building an extension that runs inside Tappify.
+Build, test, debug and publish Tappify extensions with Claude Code.
+
+> This Claude Code plugin is for extension developers. It does not let
+> workspace members access or operate Tappify through Claude, and it does not
+> provide Tappify's in-product AI features.
+
+## Who this is for
+
+Install this plugin when you are developing a Tappify extension. It gives
+Claude Code the documentation, workflows and developer operations needed to
+work with the Tappify extension platform.
 
 ## Install
 
-```
-/plugin marketplace add tappify-dev/claude-plugin
-/plugin install tappify@tappify
+```text
+/plugin marketplace add tappify-dev/claude-code-extension-tools
+/plugin install extension-tools@tappify
 ```
 
 Then restart Claude Code, or run `/reload-plugins`.
 
-`tappify-dev/claude-plugin` is not published yet. Until it is, add this
-checkout by path: `/plugin marketplace add /path/to/claude-plugin`.
+To load a local checkout:
+
+```text
+/plugin marketplace add /path/to/claude-code-extension-tools
+/plugin install extension-tools@tappify
+```
 
 ## What you get
 
-### Skills
+### Claude Code skills
 
-Claude loads these on its own when the work matches.
+Claude Code loads these when the work matches.
 
 | Skill | Loads when you are |
 | --- | --- |
@@ -26,19 +40,19 @@ Claude loads these on its own when the work matches.
 | `adding-a-contribution` | Adding a widget, page, storage collection, procedure, tool or any other contribution |
 | `testing-an-extension` | Writing or fixing tests for a component, a procedure or a server handler |
 | `publishing-an-extension` | Publishing a release, writing notes, changing visibility, or reading a review outcome |
-| `debugging-extension-load-failures` | Looking at an extension that does not render in the host |
+| `debugging-extension-load-failures` | Looking at a Tappify extension that does not render in the web app |
 
-### Command
+### New extension command
 
-`/tappify:new-extension` walks from an empty directory to a published first
-release on your sandbox project.
+`/extension-tools:new-extension` walks from an empty directory to a published
+first release on your Tappify sandbox project.
 
-### MCP server
+### Tappify CLI integration
 
-The plugin declares `tappify mcp`, the server the CLI already ships, so Claude
-runs these without a shell:
+The plugin connects Claude Code to the MCP server included with the Tappify
+CLI, so Claude Code can run these developer operations without a shell:
 
-| Tool | Does |
+| MCP operation | Does |
 | --- | --- |
 | `extension_validate` | Checks the manifest against the schema and the registry |
 | `extension_doctor` | Runs every check, including your build, typecheck, lint, tests and the axe pass |
@@ -46,17 +60,18 @@ runs these without a shell:
 | `extension_registry` | Lists pages, slots, charts, tables, scopes, categories and events |
 | `extension_status` | Reports the live release, the pending release, the review timeline and the install count |
 | `extension_add` | Adds one contribution |
-| `extension_publish` | Builds the project, runs the local checks and describes the release, registering nothing; the id is claimed, the store checks run and the release uploads once you confirm |
+| `extension_publish` | Previews a release without changing server state, then publishes it after you confirm |
 | `docs_search` | Searches the Tappify extension documentation |
 
-Every tool that reads an extension takes `cwd`, and defaults to the directory
-the server was started in.
+Every operation that reads a Tappify extension takes `cwd`, defaulting to the
+directory where the server started.
 
 ## Requirements
 
+- Claude Code
 - The Tappify CLI on your `PATH`: `curl -fsSL https://get.tappify.ai | sh`, or
-  `npm i -g @tappify/cli` on Node 20 or newer, then `tappify login`
-- A vendor account: `tappify vendor create`
+  `npm install --global @tappify/cli` on Node 20 or newer, then `tappify login`
+- An extension publisher account: `tappify vendor create`
 
 ## Documentation
 

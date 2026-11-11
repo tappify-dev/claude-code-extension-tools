@@ -1,13 +1,13 @@
 {
-  "name": "tappify",
-  "description": "Build, test and publish Tappify extensions: skills for the manifest, the bridge, testing, publishing and load failures, plus the tappify MCP server.",
+  "name": "extension-tools",
+  "description": "Developer tools for building, testing, debugging and publishing Tappify extensions with Claude Code. Not intended for Tappify's workspace or in-product AI experience.",
   "version": "0.1.0",
   "author": {
     "name": "Tappify",
     "url": "https://tappify.ai"
   },
   "homepage": "https://docs.tappify.ai/extensions",
-  "repository": "https://github.com/tappify-dev/claude-plugin",
+  "repository": "https://github.com/tappify-dev/claude-code-extension-tools",
   "license": "MIT",
-  "keywords": ["tappify", "extension", "tap-store", "vendor", "mcp"]
+  "keywords": ["tappify", "extension-development", "claude-code", "tap-store", "mcp"]
 }
