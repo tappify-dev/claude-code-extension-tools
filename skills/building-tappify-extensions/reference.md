@@ -13,6 +13,7 @@ to expect.
 | `store.metadata:read` | Listing metadata, keyword set and positions | no | no |
 | `reviews:read` | Review text, ratings, replies | no | no |
 | `crashes:read` | Crash-free rate, issue counts | no | no |
+| `builds:read` | Build results: branch, commit, version, build number, duration and failure reason | no | no |
 | `revenue:read` | MRR, revenue series, refund counts | no | yes |
 | `metrics:write` | Connector metrics into the metrics store | no | no |
 | `alerts:write` | Webhooks become alerts and banners | no | yes |
@@ -43,9 +44,9 @@ storage; `work:create` and `work:sync` for a work destination.
 
 | Page | Host route | Slots | Charts | Tabs |
 | --- | --- | --- | --- | --- |
-| `overview` ("Home") | `/projects/:id/overview` | `kpi-row`, `insights`, `sidebar` | `installs-activity` | yes |
+| `overview` ("Home") | `/projects/:id/overview` | `kpi-row`, `insights`, `sidebar` | `installs-activity`, `release-cadence` | yes |
 | `analytics` | `/projects/:id/analytics` | `kpi-row`, `below-chart`, `sidebar` | `installs-activity`, `conversion` | yes |
-| `deployments` | `/projects/:id/deployments` | `sidebar`, `below-list` | `release-cadence` | yes |
+| `deployments` ("Builds") | `/projects/:id/builds` | `sidebar`, `below-list` | none | yes |
 | `ai_chat` ("Assistant") | the chat drawer | none | none | none |
 
 Banners render at the top of `overview` and `analytics`. A page contribution
@@ -54,9 +55,10 @@ gets its own route `/projects/:id/ext/:extensionId/:pageId`, and with
 
 ## Host tables
 
-Row actions attach to `analytics.keywords`, `analytics.reviews`,
-`deployments.releases` and `deployments.builds`. The component mounts in the
-expand panel with the row as `tap.context`.
+Row actions attach to `analytics.keywords` ("Keywords"), `analytics.reviews`
+("Reviews"), `deployments.releases` ("Releases"), `deployments.builds`
+("TestFlight builds") and `deployments.runs` ("Builds", not drawn yet). The
+component mounts in the expand panel with the row as `tap.context`.
 
 ## Contribution kinds
 
