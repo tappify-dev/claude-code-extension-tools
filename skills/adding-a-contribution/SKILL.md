@@ -71,7 +71,7 @@ schema files. `add`, `remove` and `dev` all rewrite it, `doctor` fails the
 committed.
 
 Editing it by hand is always wrong: change the manifest or the schema and run
-`tappify extension types`.
+`tappify extension doctor --fix`.
 
 It gives you `tap.storage.<collection>`, `tap.server.<procedure>(input)` typed
 from both schemas, `ActionId` and `ActionInput`, `TelemetryEvent`, the settings

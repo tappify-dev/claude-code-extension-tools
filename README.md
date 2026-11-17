@@ -56,7 +56,6 @@ CLI, so Claude Code can run these developer operations without a shell:
 | --- | --- |
 | `extension_validate` | Checks the manifest against the schema and the registry |
 | `extension_doctor` | Runs every check, including your build, typecheck, lint, tests and the axe pass |
-| `extension_types` | Regenerates the generated types |
 | `extension_registry` | Lists pages, slots, charts, tables, scopes, categories and events |
 | `extension_status` | Reports the live release, the pending release, the review timeline and the install count |
 | `extension_add` | Adds one contribution |
